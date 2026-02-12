@@ -30,7 +30,7 @@ describe("defie tests", () => {
       wallet1
     );
 
-    // Check the result of the transfer transaction
+    // Check the result of the transfer transaction that was made
     expect(block.result).toBeOk(Cl.bool(true));
 
     console.log("check");
