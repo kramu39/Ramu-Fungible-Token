@@ -78,3 +78,29 @@
     (ok true)
   )
 )
+
+;; Burn tokens from the caller's balance
+;; Reduces total supply accordingly
+;; Only token owner can burn their own tokens
+(define-public (burn (amount uint))
+  (let ((caller tx-sender))
+    (begin
+      ;; Verify caller has enough balance
+      (asserts! (>= (ft-get-balance ramu-fungible-token caller) amount)
+                (err u102)) ;; optional error: ERR_INSUFFICIENT_BALANCE
+
+      ;; Burn the tokens
+      (ft-burn? ramu-fungible-token amount caller)
+
+      ;; Emit event for transparency
+      (print {
+        event: "ft-burn",
+        owner: caller,
+        amount: amount,
+        block: block-height
+      })
+
+      (ok true)
+    )
+  )
+)
