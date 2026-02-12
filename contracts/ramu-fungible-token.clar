@@ -45,6 +45,7 @@
   (ok (some TOKEN_URI))
 )
 
+
 ;; Mint new tokens and send them to a recipient.
 ;; Only the contract deployer can perform this operation.
 (define-public (mint
@@ -54,6 +55,17 @@
   (begin
     (asserts! (is-eq tx-sender CONTRACT_OWNER) ERR_OWNER_ONLY)
     (ft-mint? ramu-fungible-token amount recipient)
+
+    ;; Emit mint event
+    (print {
+      event: "ft-mint",
+      amount: amount,
+      recipient: recipient,
+      block: block-height,
+      tx: tx-sender
+    })
+
+    (ok true)
   )
 )
 
@@ -71,10 +83,18 @@
       ERR_NOT_TOKEN_OWNER
     )
     (try! (ft-transfer? ramu-fungible-token amount sender recipient))
-    (match memo
-      to-print (print to-print)
-      0x
-    )
+
+    ;; Emit transfer event
+    (print {
+      event: "ft-transfer",
+      amount: amount,
+      sender: sender,
+      recipient: recipient,
+      memo: memo,
+      block: block-height,
+      tx: tx-sender
+    })
+
     (ok true)
   )
 )
